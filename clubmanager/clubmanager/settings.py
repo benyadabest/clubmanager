@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'athletes.apps.AthletesConfig',
     'crispy_forms',
     'cv2',
-    'pyzbar'
+    'pyzbar',
+    'stripe',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,5 @@ AUTH_USER_MODEL = 'athletes.User'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+STRIPE_PUBLIC_KEY = 'pk_test_51LmpcNHWOVbOxjrFDCLdvUD6nW2AIkgAFD91wDcf3ktPEgV15Hy3OzluEQRDqptCz2YNGY2ROoCL9nmO9RsYualb00DWgSmWn7'
+STRIPE_SECRET_KEY = 'sk_test_51LmpcNHWOVbOxjrFdV6TSCj935geOKcEfqQ8FFZv1KxusqThdu7nkrVmf82QGSTPaEwnevReqi9NzmEZcK7Lfe4b00gMVYuyad'
