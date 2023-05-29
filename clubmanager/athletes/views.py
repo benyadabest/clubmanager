@@ -351,30 +351,7 @@ def athleteEventSignup(request):
 
     if request.method == 'POST':
         form = AthleteEventForm(request.POST)
-        if form.is_valid():
-            form.save()
-            checkout_session = stripe.checkout.Session.create(
-                payment_method_types=["card"],
-                line_items=[
-                    {
-                        "price_data": {
-                            "currency": "usd",
-                            "unit_amount": 40 * 100,
-                            "product_data": {
-                                "name": "Ben Product",
-                                "description": "Alex Product",
-                            },
-                        },
-                        "quantity": 1,
-                    }
-                ],
-                metadata={"product_id": "prod_Nz8hgZfsOK3Il1"},
-                mode="payment",
-                success_url=settings.PAYMENT_SUCCESS_URL,
-                cancel_url=settings.PAYMENT_CANCEL_URL,
-            )
-        return redirect(checkout_session.url)
-#             return redirect('athletes')
+        return redirect('athletes')
 
     context = {'form': form}
     return render(request, 'athletes/athleteEvent_form.html', context)
@@ -426,7 +403,30 @@ def athleteEventSignup2(request, num):
             ae = Eventsignup(athlete=athlete, event=form.cleaned_data['event'], transportation=form.cleaned_data['transportation'])
             try:
                 ae.save()
-                return redirect('profile', num)
+                 if form.is_valid():
+            form.save()
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=[
+                    {
+                        "price_data": {
+                            "currency": "usd",
+                            "unit_amount": 40 * 100,
+                            "product_data": {
+                                "name": "Ben Product",
+                                "description": "Alex Product",
+                            },
+                        },
+                        "quantity": 1,
+                    }
+                ],
+                metadata={"product_id": "prod_Nz8hgZfsOK3Il1"},
+                mode="payment",
+                success_url=settings.PAYMENT_SUCCESS_URL,
+                cancel_url=settings.PAYMENT_CANCEL_URL,
+            )
+                return redirect(checkout_session.url)
+#                 return redirect('profile', num)
             except:
                 return redirect('profile', num)
 
