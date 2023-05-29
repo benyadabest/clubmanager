@@ -1,0 +1,24 @@
+{% load static %}
+<h1>AthleteMNGR</h1>
+
+{% if user.is_coach %}
+<a href="{% url 'athletes' %}">Home</a>
+<a href="{% url 'attendance' %}">Attendance</a>
+<a href="{% url 'create-athlete' %}">Add-Athlete</a>
+<a href="{% url 'create-group' %}">Add-Group</a>
+<a href="{% url 'create-event' %}">Add-Event</a>
+{% endif %}
+
+{% if user.is_athlete %}
+<a href="{% url 'events' %}">Events</a>
+{% endif %}
+
+{% if user.is_authenticated %}
+<a href="{% url 'profile' user.id %}">Profile</a>
+<a href="{% url 'logout' %}">LogOut</a>
+<h4>Welcome {{user.username}}</h4>
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+{% endif %}
+
+<hr>

@@ -1,0 +1,117 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Groups:</h1>
+
+<ul>
+    {% for group in groups %}
+    <li><a href="{% url 'group' group.id %}">{{group.name}}</a> -- <a href="{% url 'update-group' group.id %}">Update Info</a> -- <a href="{% url 'delete-group' group.id %}">Delete Group</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+<br>
+<br>
+<br>
+
+<h1>Events:</h1>
+<a href="{% url 'athlete-event-signup' %}">Add Athlete To Event</a>
+<ul>
+    {% for event in events %}
+    <li><a href="{% url 'event' event.id %}">{{event.name}}</a> -- {{event.location}} -- {{event.date_start}} -- {{event.date_end}} -- {{event.description}} -- <a href="{% url 'update-event' event.id %}">Update Info</a> -- <a href="{% url 'delete-event' event.id %}">Delete Event</a></a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+<br>
+<br>
+<br>
+
+<h1>Best Attendees</h1>
+<ul>
+    <li>Percent Present (%) -- Name -- Present -- Late -- Absent</li>
+    <hr>
+    <br>
+    {% for att in attendance %}
+    <li>{{att.0}} -- <a href="{% url 'athlete' att.5 %}">{{att.1}}</a> --  {{att.2}} -- {{att.3}} -- {{att.4}}</li>
+    <hr>
+    {% endfor %}
+</ul>
+
+{% if attendance.has_other_pages %}
+<div>
+    <ul>
+
+        {% if attendance.has_previous %}
+        <li><a href="?page={{attendance.previous_page_number}}"
+                data-page="{{attendance.previous_page_number}}">&#10094; Prev</a></li>
+        {% endif %}
+
+
+        {% for page in custom_range2 %}
+
+        {% if page == attendance.number%}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% else %}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if attendance.has_next %}
+        <li><a href="?page={{attendance.next_page_number}}"
+                data-page="{{attendance.next_page_number}}">Next &#10095;</a></li>
+        {% endif %}
+
+
+
+    </ul>
+</div>
+{% endif %}
+
+<br>
+<br>
+<br>
+
+<h1>Athletes Below:</h1>
+<form action="" method="GET">
+    {{filter.form}}
+    <button type="submit">Search</button>
+</form>
+<ul>
+    {% for athlete in athletes %}
+    <li><a href="{% url 'athlete' athlete.id %}">{{athlete.name}}</a> -- {{athlete.dob}} -- {{athlete.year}} -- {{athlete.weight}} -- {{athlete.group|default_if_none:"Group Not Assigned"}} -- {{athlete.email}} -- <a href="{% url 'update-athlete' athlete.id %}">Update Info</a> -- <a href="{% url 'delete-athlete' athlete.id %}">Delete Athlete</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+{% if athletes.has_other_pages %}
+<div>
+    <ul>
+
+        {% if athletes.has_previous %}
+        <li><a href="?page={{athletes.previous_page_number}}"
+                data-page="{{athletes.previous_page_number}}">&#10094; Prev</a></li>
+        {% endif %}
+
+
+        {% for page in custom_range %}
+
+        {% if page == athletes.number%}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% else %}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if athletes.has_next %}
+        <li><a href="?page={{athletes.next_page_number}}"
+                data-page="{{athletes.next_page_number}}">Next &#10095;</a></li>
+        {% endif %}
+
+
+
+    </ul>
+</div>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Attendance Below:</h1>
+<form action="" method="GET">
+    {{filter.form}}
+    <button type="submit">Search</button>
+</form>
+<ul>
+    {% for att in attendance %}
+    <li>{{att}}</li>
+    <hr>
+    {% endfor %}
+</ul>
+
+{% if attendance.has_other_pages %}
+<div>
+    <ul>
+
+        {% if attendance.has_previous %}
+        <li><a href="?page={{attendance.previous_page_number}}"
+                data-page="{{attendance.previous_page_number}}">&#10094; Prev</a></li>
+        {% endif %}
+
+
+        {% for page in custom_range %}
+
+        {% if page == attendance.number%}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% else %}
+        <li><a href="?page={{page}}" data-page="{{page}}">{{page}}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if attendance.has_next %}
+        <li><a href="?page={{attendance.next_page_number}}"
+                data-page="{{attendance.next_page_number}}">Next &#10095;</a></li>
+        {% endif %}
+
+
+
+    </ul>
+</div>
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

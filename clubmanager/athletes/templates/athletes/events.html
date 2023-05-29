@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Events:</h1>
+<a href="{% url 'athlete-event-signup2' user.id %}">Sign Up for Event</a>
+<ul>
+    {% for event in events %}
+    <li>{{event.name}} -- {{event.location}} -- {{event.date_start}} -- {{event.date_end}} -- {{event.description}}</li>
+    <hr>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

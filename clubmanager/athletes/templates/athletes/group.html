@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+
+<br>
+<h2>Group: {{group.name}}</h2>
+<img src="{{group.barcode.url}}" default="">
+
+<br>
+<br>
+
+<h4>Class Times</h4>
+<a href="{% url 'create-classtime' group.id %}">Add Class Time</a>
+<ul>
+    {% for date in group.classes.all %}
+    <li>{{date.id}} -- {{date.date}} -- <a href="{% url 'self-attendance' date.id group.id %}">Open Self Check In</a> -- <a href="{% url 'group-attendance' date.id group.id %}">Class Attendance</a> -- <a href="{% url 'update-classtime' date.id group.id %}">Update Time</a> -- <a href="{% url 'delete-classtime' date.id group.id %}">Delete Time</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+<br>
+<br>
+
+<h4>Athletes in group</h4>
+<ul>
+    {% for athlete in athletes %}
+    <li><a href="{% url 'athlete' athlete.id %}">{{athlete.name}}</a> -- {{athlete.dob}} -- {{athlete.year}} -- {{athlete.weight}} -- {{athlete.group|default_if_none:"Group Not Assigned"}} -- {{athlete.email}} -- <a href="{% url 'update-athlete' athlete.id %}">Update Info</a> -- <a href="{% url 'delete-athlete' athlete.id %}">Delete Athlete</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+<br>
+<br>
+
+
+
+
+
+{% endblock content %}

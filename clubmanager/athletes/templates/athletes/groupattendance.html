@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Class Attendence:</h1>
+
+<ul>
+    {% for att in attendances %}
+    <li>{{att}} -- <a href="{% url 'update-attendance' classtime.id group.id att.id %}">Update</a> -- <a href="{% url 'delete-attendance' classtime.id group.id att.id %}">Delete</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+
+{% endblock %}

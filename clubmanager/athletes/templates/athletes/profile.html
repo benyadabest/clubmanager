@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<br>
+<h2>Hi, {{athlete.name}}!</h2>
+<img src="{{athlete.barcode.url}}" default="">
+<br>
+<br>
+
+<a href="{% url 'update-profile' athlete.id %}">Update Your Info!</a>
+
+{% if user.is_athlete %}
+<h3>Events Signed Up For: </h3>
+<ul>
+    {% for event in events %}
+    <li>{{event.event}}</a> -- {{event.transportation}} -- <a href="{% url 'update-athlete-to-event' event.event.id athlete.id %}">Update Sign Up</a> -- <a href="{% url 'delete-athlete-to-event' event.event.id athlete.id %}">Delete Sign Up</a></li>
+    <hr>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+{% if user.is_athlete %}
+<h3>DOB: </h3><p>{{athlete.dob}}</p>
+<h3>Year: </h3><p>{{athlete.year}}</p>
+<h3>Weight: </h3><p>{{athlete.weight}}</p>
+{% endif %}
+
+<h3>Class/Group: </h3><p>{{athlete.group}}</p>
+<h3>Email: </h3><p>{{athlete.email}}</p>
+<h3>Phone #: </h3><p>{{athlete.phonenumber}}</p>
+<h3>Gender: </h3><p>{{athlete.gender}}</p>
+
+{% if user.is_athlete %}
+<h3>School: </h3><p>{{athlete.school}}</p>
+<h3>Emergency Contact Name: </h3><p>{{athlete.contact}}</p>
+<h3>Emergency Contact Number: </h3><p>{{athlete.contactnumber}}</p>
+<h3>GPA: </h3><p>{{athlete.gpa}}</p>
+<h3>Goals: </h3><p>{{athlete.goals}}</p>
+
+<br>
+<br>
+<img src="{{athlete.transcript}}" default="">
+<img src="{{athlete.usaw}}" default="">
+{% endif %}
+
+
+{% endblock content %}
