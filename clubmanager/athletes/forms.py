@@ -22,12 +22,12 @@ class GroupForm(ModelForm):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'location', 'description', 'date_start', 'date_end']
+        fields = ['name', 'location', 'description', 'price','date_start', 'date_end']
 
 class AthleteEventForm(ModelForm):
     class Meta:
         model = Eventsignup
-        fields = ['athlete', 'event', 'transportation']
+        fields = ['athlete', 'event', 'transportation', 'paid']
 
 class AthleteEventForm2(ModelForm):
     class Meta:

@@ -29,6 +29,7 @@ class User(AbstractUser):
 #     #         return super().save(*args, **kwargs)
     is_athlete = models.BooleanField(default=False)
     is_coach = models.BooleanField(default=False)
+    id = models.AutoField(primary_key=True)
 
 class Club(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
@@ -50,6 +51,7 @@ class Event(models.Model):
     description = models.CharField(max_length=300, blank=True, null=True)
     date_start = models.DateField()
     date_end = models.DateField()
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     delete_flag = models.IntegerField(default = 0)
     barcode = models.ImageField(upload_to='barcodes/', blank=True)
 
@@ -130,7 +132,6 @@ class Athlete(models.Model):
     gpa = models.DecimalField(default=2.0, decimal_places=2, max_digits=3)
     transcript = models.ImageField(upload_to="", null=True, blank=True, default="")
     goals = models.CharField(max_length=400, blank=True, null=True)
-    id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     barcode = models.ImageField(upload_to='barcodes/', blank=True, default="")
 
     def get_present(self):
@@ -182,7 +183,7 @@ class Athlete(models.Model):
         if self._state.adding:
             COD128 = barcode.get_barcode_class('code128')
             rv = BytesIO()
-            code = COD128(f'{self.id}', writer=ImageWriter()).write(rv)
+            code = COD128(f'{self.user.id}', writer=ImageWriter()).write(rv)
             self.barcode.save(f'{self.first_name + " " + self.last_name}.png', File(rv), save=False)
             return super().save(*args, **kwargs)
         else:
@@ -191,12 +192,10 @@ class Athlete(models.Model):
 class Eventsignup(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     transportOptions = [('Team', 'Travel with the Team'), ('Parents', 'Travel with Parents')]
-    #paymentOptions = [('Stripe', 'Pay Online'), ('Cash', 'Pay with Cash')]
     athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
     transportation = models.CharField(max_length=250, choices = transportOptions)
-    #payment = models.CharField(max_length=250, choices=paymentOptions)
 
     class Meta:
         unique_together = ['athlete', 'event']

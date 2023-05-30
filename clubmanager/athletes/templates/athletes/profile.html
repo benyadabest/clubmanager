@@ -8,13 +8,13 @@
 <br>
 <br>
 
-<a href="{% url 'update-profile' athlete.id %}">Update Your Info!</a>
+<a href="{% url 'update-profile' request.user.id %}">Update Your Info!</a>
 
 {% if user.is_athlete %}
 <h3>Events Signed Up For: </h3>
 <ul>
     {% for event in events %}
-    <li>{{event.event}}</a> -- {{event.transportation}} -- <a href="{% url 'update-athlete-to-event' event.event.id athlete.id %}">Update Sign Up</a> -- <a href="{% url 'delete-athlete-to-event' event.event.id athlete.id %}">Delete Sign Up</a></li>
+    <li>{{event.event}}</a> -- {{event.transportation}} -- <a href="{% url 'update-athlete-to-event' event.event.id reqeust.user.id %}">Update Sign Up</a> -- <a href="{% url 'delete-athlete-to-event' event.event.id request.user.id %}">Delete Sign Up</a></li>
     <hr>
     {% endfor %}
 </ul>

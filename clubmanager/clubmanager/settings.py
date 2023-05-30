@@ -120,8 +120,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-PAYMENT_SUCCESS_URL=http://127.0.0.1:8000/success/
-PAYMENT_CANCEL_URL=http://127.0.0.1:8000/cancel/
+PAYMENT_SUCCESS_URL= 'http://127.0.0.1:8000/success/'
+PAYMENT_CANCEL_URL= 'http://127.0.0.1:8000/cancel/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

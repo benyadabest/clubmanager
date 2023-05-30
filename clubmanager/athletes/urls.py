@@ -36,4 +36,7 @@ urlpatterns = [
     path('update-profile/<str:num>/', views.updateprofile, name='update-profile'),
     path('signup/athlete/', views.AthleteSignUpView.as_view(), name='athlete-signup'),
     path('signup/coach/', views.CoachSignUpView.as_view(), name='coach-signup'),
+    path('cancel/', views.cancel, name="cancel"),
+    path('success/', views.success, name="success"),
+
 ]
