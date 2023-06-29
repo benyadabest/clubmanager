@@ -14,7 +14,7 @@
 <h3>Events Signed Up For: </h3>
 <ul>
     {% for event in events %}
-    <li>{{event.event}}</a> -- {{event.transportation}} -- <a href="{% url 'update-athlete-to-event' event.event.id reqeust.user.id %}">Update Sign Up</a> -- <a href="{% url 'delete-athlete-to-event' event.event.id request.user.id %}">Delete Sign Up</a></li>
+    <li>{{event.event}}</a> -- {{event.transportation}} -- <a href="{% url 'delete-athlete-to-event' event.event.id request.user.id %}">Delete Sign Up</a></li>
     <hr>
     {% endfor %}
 </ul>

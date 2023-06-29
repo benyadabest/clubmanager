@@ -7,7 +7,7 @@ urlpatterns = [
     path('dashboard/athlete/<str:num>/', views.athlete, name="athlete"),
     path('dashboard/group/<str:num>/', views.group, name="group"),
     path('dashboard/event/<str:num>/', views.event, name="event"),
-    path('dashboard/create-athlete/', views.createAthlete, name="create-athlete"),
+    path('dashboard/add-athlete/', views.addAthlete, name="add-athlete"),
     path('dashboard/update-athlete/<str:num>/', views.updateAthlete, name="update-athlete"),
     path('dashboard/delete-athlete/<str:num>', views.deleteAthlete, name="delete-athlete"),
     path('dashboard/create-group/', views.createGroup, name="create-group"),
@@ -38,5 +38,6 @@ urlpatterns = [
     path('signup/coach/', views.CoachSignUpView.as_view(), name='coach-signup'),
     path('cancel/', views.cancel, name="cancel"),
     path('success/', views.success, name="success"),
+    path('message/', views.email, name="message"),
 
 ]

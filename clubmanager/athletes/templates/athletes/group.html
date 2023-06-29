@@ -25,7 +25,7 @@
 <h4>Athletes in group</h4>
 <ul>
     {% for athlete in athletes %}
-    <li><a href="{% url 'athlete' athlete.id %}">{{athlete.name}}</a> -- {{athlete.dob}} -- {{athlete.year}} -- {{athlete.weight}} -- {{athlete.group|default_if_none:"Group Not Assigned"}} -- {{athlete.email}} -- <a href="{% url 'update-athlete' athlete.id %}">Update Info</a> -- <a href="{% url 'delete-athlete' athlete.id %}">Delete Athlete</a></li>
+    <li><a href="{% url 'athlete' athlete.user.id %}">{{athlete.name}}</a> -- {{athlete.dob}} -- {{athlete.year}} -- {{athlete.weight}} -- {{athlete.group|default_if_none:"Group Not Assigned"}} -- {{athlete.email}} -- <a href="{% url 'update-athlete' athlete.user.id %}">Update Info</a> -- <a href="{% url 'delete-athlete' athlete.user.id %}">Delete Athlete</a></li>
     <hr>
     {% endfor %}
 </ul>

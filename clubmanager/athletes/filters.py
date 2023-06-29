@@ -3,6 +3,7 @@ import django_filters
 from django_filters import CharFilter
 from .models import *
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from operator import attrgetter
 
 
 class AthleteFilter(django_filters.FilterSet):

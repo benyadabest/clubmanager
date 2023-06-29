@@ -17,7 +17,7 @@
 </form>
 <ul>
     {% for athlete in eventsignups %}
-    <li><a href="{% url 'athlete' athlete.athlete.id %}">{{athlete.athlete}}</a> -- {{athlete.transportation}} -- <a href="{% url 'update-athlete-to-event' event.id athlete.athlete.id %}">Update Info</a> -- <a href="{% url 'delete-athlete-to-event' event.id athlete.athlete.id %}">Delete Instance</a></li>
+    <li><a href="{% url 'athlete' athlete.athlete.user.id %}">{{athlete.athlete}}</a> -- {{athlete.transportation}} -- Paid: {{athlete.paid}} -- <a href="{% url 'update-athlete-to-event' event.id athlete.athlete.user.id %}">Update Info</a> -- <a href="{% url 'delete-athlete-to-event' event.id athlete.athlete.user.id %}">Delete Instance</a></li>
     <hr>
     {% endfor %}
 </ul>

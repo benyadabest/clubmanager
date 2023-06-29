@@ -129,10 +129,15 @@ class Athlete(models.Model):
     school = models.CharField(max_length=250)
     contact = models.CharField(max_length=250)
     contactnumber = models.CharField(max_length=12)
+    contactemail = models.CharField(max_length=250)
     gpa = models.DecimalField(default=2.0, decimal_places=2, max_digits=3)
     transcript = models.ImageField(upload_to="", null=True, blank=True, default="")
     goals = models.CharField(max_length=400, blank=True, null=True)
     barcode = models.ImageField(upload_to='barcodes/', blank=True, default="")
+
+
+    class Meta:
+        ordering = ['last_name']
 
     def get_present(self):
         try:

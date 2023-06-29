@@ -19,6 +19,11 @@ class GroupForm(ModelForm):
         model = Groups
         fields = ['name']
 
+class CoachForm(ModelForm):
+    class Meta:
+        model = Athlete
+        fields = ['first_name', 'last_name', 'phonenumber', 'group', 'email']
+
 class EventForm(ModelForm):
     class Meta:
         model = Event
@@ -33,6 +38,14 @@ class AthleteEventForm2(ModelForm):
     class Meta:
         model = Eventsignup
         fields = ['event', 'transportation']
+
+class MessageForm(forms.Form):
+    subject = forms.CharField(label="Subject", max_length=100)
+    recipients = forms.ModelMultipleChoiceField(label="Recipient(s)", queryset=Groups.objects.all())
+    message = forms.CharField(label="Message", max_length=500)
+
+class EmailForm(forms.Form):
+    email = forms.CharField(max_length=100)
 
 class ClassTimeForm(ModelForm):
     class Meta:

@@ -10,15 +10,17 @@ from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as django_logout
 from django.shortcuts import render, redirect
 from .models import User, Athlete, Groups, Event, Eventsignup, ClassTime, Attendance
-from .forms import AthleteForm, GroupForm, EventForm, AthleteEventForm, ClassTimeForm, AttendanceForm, AttendanceForm2, AthleteSignUpForm, CoachSignUpForm, AthleteEventForm2
+from .forms import AthleteForm, GroupForm, EventForm, AthleteEventForm, ClassTimeForm, AttendanceForm, AttendanceForm2, AthleteSignUpForm, CoachSignUpForm, CoachForm, AthleteEventForm2, MessageForm, EmailForm
 from .filters import AthleteFilter, paginateAthletes, EventsignupFilter, AttendanceFilter
 from django.views.generic import CreateView
 from uuid import UUID
 import cv2
 from pyzbar import pyzbar
+from django.contrib import messages
 from pyzbar.pyzbar import decode
 import stripe
 from django.conf import settings
+from django.core.mail import send_mass_mail, send_mail
 from .decorators import *
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -45,7 +47,7 @@ def athletes(request):
     
     attendance = []
     for a in athletes:
-        attendance.append((a.attendance(), a.name(), a.get_present(), a.get_late(), a.get_absent(), request.user.id))
+        attendance.append((a.attendance(), a.name(), a.get_present(), a.get_late(), a.get_absent(), a.user.id))
     
     def sort_key(report):
         return report[0]
@@ -98,7 +100,8 @@ def event(request, num):
 @login_required
 @coach_required
 def athlete(request, num):
-    athlete = Athlete.objects.get(id=num)
+    user = User.objects.get(id=num)
+    athlete = Athlete.objects.get(user=user)
     events = Eventsignup.objects.filter(athlete=athlete)
     context = {'athlete': athlete, 'events':events}
     return render(request, 'athletes/athlete.html', context)
@@ -248,14 +251,21 @@ def deleteClassTime(request, num, num2):
 
 @login_required
 @coach_required
-def createAthlete(request):
-    form = AthleteForm()
+def addAthlete(request):
+    form = EmailForm()
 
     if request.method == 'POST':
-        form = AthleteForm(request.POST, request.FILES)
+        form = EmailForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('athletes')
+            email = form.cleaned_data['email']
+            try:
+                send_mail("Sign Up to my Wrestling Club!", "message", request.user.email, [email], fail_silently=False)
+                messages.success(request, "Message sent." )
+                return redirect('athletes')
+            except:
+                print("Email didn't go thru")
+                messages.error(request, "Email didn't send")
+                return redirect('athletes')
 
     context = {'form': form}
     return render(request, 'athletes/athlete_form.html', context)
@@ -310,9 +320,11 @@ def updateGroup(request, num):
     form = GroupForm(instance=group)
 
     if request.method == 'POST':
+        print(group.name)
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
+            print(group.name)
             return redirect('athletes')
             
     context = {'form': form}
@@ -390,22 +402,19 @@ def updateathleteEventSignup(request, num, num2):
     user = User.objects.get(id=num2)
     athlete = Athlete.objects.get(user=user)
     ae = Eventsignup.objects.get(event=event, athlete=athlete)
+
     form = AthleteEventForm(instance=ae)
 
     if request.method == 'POST':
         form = AthleteEventForm(request.POST, instance=ae)
         if form.is_valid():
             form.save()
-            if request.user.is_athlete:
-                return redirect('profile', num2)
-            else:
-                return redirect('athletes')
-            
+            return redirect('athletes')
+     
     context = {'form': form}
     return render(request, 'athletes/athleteEvent_form.html', context)
 
 @login_required
-@coach_required
 def deleteathleteEventSignup(request, num, num2):
     event = Event.objects.get(id=num)
     user = User.objects.get(id=num2)
@@ -435,8 +444,8 @@ def athleteEventSignup2(request, num):
             ae = form.save(commit=False)
             print(athlete)
             event = form.cleaned_data['event']
+            event.price = float(event.price) * 1.06
             ae = Eventsignup(athlete=athlete, event=form.cleaned_data['event'], transportation=form.cleaned_data['transportation'])
-            ae.save()
             if form.cleaned_data['transportation'] == 'Team' and event.price != 0.00:
                 checkout_session = stripe.checkout.Session.create(
                     payment_method_types=["card"],
@@ -444,7 +453,7 @@ def athleteEventSignup2(request, num):
                         {
                             "price_data": {
                                 "currency": "usd",
-                                "unit_amount": int(event.price + 3) * 100,
+                                "unit_amount": int(event.price) * 100,
                                 "product_data": {
                                     "name": event.name,
                                     "description": "Event Payment",
@@ -458,8 +467,12 @@ def athleteEventSignup2(request, num):
                     success_url=settings.PAYMENT_SUCCESS_URL,
                     cancel_url=settings.PAYMENT_CANCEL_URL,
                 )
+
+                ae.paid = True
+                ae.save()
                 return redirect(checkout_session.url)
             else:
+                ae.save()
                 return redirect('profile', num)
 
     context = {'form': form}
@@ -489,13 +502,23 @@ def profile(request, num):
 def updateprofile(request, num):
     user = User.objects.get(id=num)
     athlete = Athlete.objects.get(user=user)
-    form = AthleteForm(instance=athlete)
 
-    if request.method == 'POST':
-        form = AthleteForm(request.POST, request.FILES, instance=athlete)
-        if form.is_valid():
-            form.save()
-            return redirect('profile', num)
+    if request.user.is_coach:
+        form=CoachForm(instance=athlete)
+
+        if request.method == 'POST':
+            form = CoachForm(request.POST, request.FILES, instance=athlete)
+            if form.is_valid():
+                form.save()
+                return redirect('profile', num)
+    else:
+        form = AthleteForm(instance=athlete)
+
+        if request.method == 'POST':
+            form = AthleteForm(request.POST, request.FILES, instance=athlete)
+            if form.is_valid():
+                form.save()
+                return redirect('profile', num)
             
     context = {'form': form}
     return render(request, 'athletes/athlete_form.html', context)
@@ -529,6 +552,35 @@ def logout(request):
     return redirect('login')
 
 
+@login_required
+@coach_required
+def email(request):
+    emaillist = []
+    athletes = []
+    form = MessageForm()
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            groups = form.cleaned_data['recipients']
+            for recipient in groups:
+                athletes = Athlete.objects.filter(group=recipient)
+                for athlete in athletes:
+                    emaillist.append(athlete.email)
+                    emaillist.append(athlete.contactemail)
+            #send_mass_mail(subject, message, request.user.email, emaillist, fail_silently=False)
+            print(Athlete.objects.get(user=request.user).email)
+            print(subject)
+            print(message)
+            print(emaillist)
+            return redirect('athletes')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+    context = {'form': form}
+    return render(request, 'athletes/message.html', context)
 
 class AthleteSignUpView(CreateView):
     model = User

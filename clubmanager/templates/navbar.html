@@ -4,9 +4,10 @@
 {% if user.is_coach %}
 <a href="{% url 'athletes' %}">Home</a>
 <a href="{% url 'attendance' %}">Attendance</a>
-<a href="{% url 'create-athlete' %}">Add-Athlete</a>
+<a href="{% url 'add-athlete' %}">Add-Athlete</a>
 <a href="{% url 'create-group' %}">Add-Group</a>
 <a href="{% url 'create-event' %}">Add-Event</a>
+<a href="{% url 'message' %}">Send Message</a>
 {% endif %}
 
 {% if user.is_athlete %}
