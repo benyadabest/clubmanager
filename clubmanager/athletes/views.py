@@ -313,19 +313,25 @@ def createGroup(request):
     context = {'form': form}
     return render(request, 'athletes/group_form.html', context)
 
+from django.db import transaction
 @login_required
 @coach_required
 def updateGroup(request, num):
     group = Groups.objects.get(id=num)
-    form = GroupForm(instance=group)
-
-    if request.method == 'POST':
-        print(group.name)
-        form = GroupForm(request.POST, instance=group)
-        if form.is_valid():
-            form.save()
-            print(group.name)
-            return redirect('athletes')
+    # form = GroupForm(instance=group)
+    # if request.method == 'POST':
+    #     print(request.POST)
+    #     # form = GroupForm(request.POST, instance=group)
+    #     if form.is_valid():
+            # alex = form.save(commit=False)
+            # alex.save()
+            # group.name = alex.name
+            # with transaction.atomic():
+            #     ben = group.save()
+    group.name = request.POST.get('name')
+    with transaction.atomic():
+        group.save()
+        return redirect('athletes')
             
     context = {'form': form}
     return render(request, 'athletes/group_form.html', context)
